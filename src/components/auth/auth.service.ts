@@ -36,7 +36,7 @@ async signIn(
     let user: any = await this.userModel.findOne({
       email: body.email,
       blockUser: { $ne: true },
-    }).select('+password') // <--- ¡ESTA ES LA CLAVE!;
+    }).select('+password') 
     console.log(user);
 
     if (!user) {
