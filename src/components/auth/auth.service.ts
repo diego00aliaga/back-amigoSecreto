@@ -67,8 +67,6 @@ async signIn(
         },
       );
 
-
-
     const response = {
         code: 401,
         message: 'Unauthorized',
