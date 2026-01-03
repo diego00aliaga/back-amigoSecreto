@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import { IResponse } from 'src/shared/interface/response.interface';
 
@@ -100,11 +100,12 @@ export class UserService {
 
   // ... dentro de la clase UserService
   async addGift(user: any, body: AddGiftDto): Promise<IResponse<any>> {
+    const gift = { _id: new Types.ObjectId(), ...body };
     // 1. Buscamos y actualizamos en un solo paso (Atómico y seguro)
     const userDB = await this.userModel.findOneAndUpdate(
       { email: user.email }, // Filtro: Quién es el usuario
       {
-        $push: { wishlist: body }, // Acción: EMPUJAR el nuevo regalo al array 'wishlist'
+        $push: { wishlist: gift }, // Acción: EMPUJAR el nuevo regalo al array 'wishlist'
       },
       { new: true } // Opción: Devuélveme el usuario YA actualizado (con el regalo nuevo)
     ).lean(); // .lean() lo convierte a objeto JS simple (más rápido que toObject)
@@ -128,6 +129,46 @@ export class UserService {
       businessMessage: 'Regalo agregado exitosamente',
       businessCode: 'GIFT_ADDED',
       payload: userDB, 
+    };
+  }
+
+  async deleteGift(user: any, giftId: string): Promise<IResponse<any>> {
+    if (!Types.ObjectId.isValid(giftId)) {
+      const response = {
+        code: 400,
+        message: 'Bad Request',
+        businessMessage: 'Id de regalo inválido',
+        businessCode: 'INVALID_GIFT_ID',
+        payload: {},
+      };
+      throw new HttpException(response, response.code);
+    }
+    const giftObjectId = new Types.ObjectId(giftId);
+    const userDB = await this.userModel
+      .findOneAndUpdate(
+        { email: user.email, 'wishlist._id': giftObjectId },
+        { $pull: { wishlist: { _id: giftObjectId } } },
+        { new: true },
+      )
+      .lean();
+
+    if (!userDB) {
+      const response = {
+        code: 404,
+        message: 'Not Found',
+        businessMessage: 'Regalo no encontrado',
+        businessCode: 'GIFT_NOT_FOUND',
+        payload: {},
+      };
+      throw new HttpException(response, response.code);
+    }
+
+    return {
+      code: 200,
+      message: 'Success',
+      businessMessage: 'Regalo eliminado exitosamente',
+      businessCode: 'GIFT_DELETED',
+      payload: userDB,
     };
   }
 

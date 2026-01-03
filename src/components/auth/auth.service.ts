@@ -52,6 +52,20 @@ async signIn(
       throw new HttpException(response, response.code);
     }
 
+    // Check if user has a password set (might not have one if using OAuth)
+    if (!user.password) {
+      const response = {
+        code: 401,
+        message: 'Unauthorized',
+        businessMessage: 'Contraseña o email incorrecto',
+        businessCode: 'UNAUTHORIZED',
+        payload: {
+          error: 'Unauthorized',
+        },
+      };
+      throw new HttpException(response, response.code);
+    }
+
     const attempts = user.attempts ? user.attempts + 1 : 1;
 
     if (attempts > 20) {

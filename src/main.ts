@@ -5,9 +5,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: ['https://amigosecreto-55774.web.app', 'http://localhost:5173'],
-    methods: 'GET,POST',
+    methods: 'GET,POST,PUT,DELETE',
     credentials: true,
   });
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();

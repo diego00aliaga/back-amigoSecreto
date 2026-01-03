@@ -77,4 +77,21 @@ export class UserController {
       throw error
     }
   }
+
+  @HttpCode(200)
+  @UseGuards(BearerTokenGuard)
+  @Delete('gift/:giftId')
+  async deleteGift(@Request() req: any, @Param('giftId') giftId: string) {
+    try {
+      const user = req.user;
+      const response: IResponse<any> = await this.userService.deleteGift(
+        user,
+        giftId,
+      );
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -12,6 +12,10 @@ export class AddGiftDto {
 
   @IsString()
   @IsOptional()
+  value?: string; // Talla, color, etc.
+
+  @IsString()
+  @IsOptional()
   @IsUrl()
   link?: string; // Link de Amazon/MercadoLibre (Opcional)
 }
