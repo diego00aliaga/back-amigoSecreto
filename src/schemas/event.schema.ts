@@ -14,8 +14,11 @@ export class Event {
     @Prop()
     description: string;
 
-    @Prop({ required: true })
-    date: Date; // Fecha del intercambio
+    @Prop()
+    typeEvent: string;
+    
+    @Prop()
+    year: string;
 
     @Prop()
     location: string;

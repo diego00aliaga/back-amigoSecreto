@@ -21,11 +21,14 @@ export class CreateEventDto {
   @IsOptional()
   description?: string;
 
-  // Valida formato ISO 8601 (ej: "2025-12-25T20:00:00.000Z")
-  @IsDateString({}, { message: 'La fecha debe tener un formato válido (ISO 8601)' })
-  @IsNotEmpty({ message: 'La fecha del evento es obligatoria' })
-  date: string; 
+  @IsString()
+  @IsOptional()
+  year?: string;
 
+  @IsString()
+  @IsOptional()
+  typeEvent: string;
+   
   @IsString()
   @IsOptional()
   location?: string;

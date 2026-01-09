@@ -48,4 +48,20 @@ export class EventsController {
         throw error;
       }
     }
+
+
+    @HttpCode(200)
+    @Get('/start/:id')
+    async startEvent(@Param('id') id: string){
+      try {
+
+        const response: IResponse<any> = await this.eventService.startMatching(
+            id
+        );
+  
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    }
 }
